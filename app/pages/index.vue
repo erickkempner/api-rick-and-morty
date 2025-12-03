@@ -1,18 +1,19 @@
 <template>
     <div>
-        <Card :listOfCharacters="data.results"/>
+        <CharacterListing />
+        <EpisodeListing />
+        <LocationsListing />
     </div>
 </template>
 
 <script setup lang="ts">
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+import EpisodeListing from '~/components/EpisodeListing.vue'
 
 
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
-
-const {data, status, error, refresh, clear} = await useFetch('https://rickandmortyapi.com/api/character/')
 
 </script>
 

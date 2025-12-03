@@ -1,21 +1,13 @@
 <template>
 
-    <div class="w-full mx-auto max-w-[1420px] bg-[#313234] min-h-screen px-4 py-6">
+    <div class="px-4 py-6">
         
 
-        <div class="flex flex-col sm:flex-row justify-between items-center text-white mb-8 gap-4">
-            <h1 class="text-3xl font-bold">Personagens</h1>
-            
-            <NuxtLink to="/favorites"
-                class="border-2 text-md border-cyan-400 rounded-3xl flex items-center px-4 py-2 cursor-pointer hover:bg-cyan-400 hover:text-black transition-colors">
-                <Icon name="material-symbols:border-all" class="text-xl"/>
-                <span class="ml-2 font-semibold">Ver Todos</span>
-            </NuxtLink>
-        </div>
+        <CardHeader title="Personagens" toUrl="/"/>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
 
-            <div v-for="currentCharacter in listOfCharacters" :key="currentCharacter.id"
+            <div v-for="currentCharacter in listOfCharacters.splice(0, 8)" :key="currentCharacter.id"
                 class="bg-[#313234] rounded-lg p-5 w-full max-w-[340px] h-[500px] flex flex-col shadow-lg border border-gray-700 transition-transform hover:-translate-y-1">
                 
                 <NuxtImg :src="currentCharacter.image" class="rounded-lg w-full h-[220px] object-cover" />
@@ -29,15 +21,15 @@
                         
                         <div class="space-y-2 text-sm text-gray-300">
                             <p class="flex items-center gap-2 truncate">
-                                <Icon name="material-symbols:supervisor-account-outline" class="flex-shrink-0 text-cyan-400" /> 
+                                <Icon name="material-symbols:supervisor-account-outline" class="shrink-0 text-cyan-400" /> 
                                 <span class="truncate">{{ currentCharacter.species }}</span>
                             </p>
                             <p class="flex items-center gap-2 truncate">
-                                <Icon name="material-symbols:globe-uk-sharp" class="flex-shrink-0 text-cyan-400" /> 
+                                <Icon name="material-symbols:globe-uk-sharp" class="shrink-0 text-cyan-400" /> 
                                 <span class="truncate">{{ currentCharacter.origin.name }}</span>
                             </p>
                             <p class="flex items-center gap-2 truncate">
-                                <Icon name="material-symbols:ecg-heart-sharp" class="flex-shrink-0 text-cyan-400" /> 
+                                <Icon name="material-symbols:ecg-heart-sharp" class="shrink-0 text-cyan-400" /> 
                                 <span class="truncate">{{ currentCharacter.status }}</span>
                             </p>
                         </div>
@@ -54,7 +46,7 @@
 
                 </div>
                 
-                <OpenDetails />
+                <OpenDetails :actionUrl="currentCharacter.url"/>
 
             </div>
         </div>
@@ -63,7 +55,7 @@
 
 <script setup lang="ts">
 import type { Character } from "~/types/index";
-import { useFavoriteStore } from '~/stores/favorite.client'
+import { useFavoriteStore } from '~/stores/favoriteCharacter'
 
 const favoriteStore = useFavoriteStore()
 
