@@ -19,7 +19,7 @@
                 <!-- O resto do seu conteúdo permanece o mesmo -->
                 <div class="flex w-full   flex-1 overflow-hidden">
                     <div class="text-white text-left flex flex-col pr-2 ">
-                        <h2 class="py-2 text-xl font-bold truncate" :title="currentLocation.name">
+                        <h2 class="py-2 text-xl font-bold " :title="currentLocation.name">
                             {{ currentLocation.name }}
                         </h2>
                         <div class="space-y-2 text-sm text-gray-300">
