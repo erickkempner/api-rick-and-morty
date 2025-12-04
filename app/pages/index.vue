@@ -4,6 +4,7 @@
         <CharacterListing />
         <EpisodeListing />
         <LocationsListing />
+        <Footer />
     </div>
 </template>
 
@@ -18,6 +19,4 @@ pinia.use(piniaPluginPersistedstate)
 
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
