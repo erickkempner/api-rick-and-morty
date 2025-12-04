@@ -1,13 +1,13 @@
 <template>
-    <div class="px-4 py-6" v-show="getCategory == 'locations' || getCategory == 'all'">
+    <div class="px-2 py-4 sm:px-4 sm:py-6" v-show="getCategory == 'locations' || getCategory == 'all'">
         <div class="flex flex-col sm:flex-row justify-between items-center text-white mb-8 gap-4" />
-        <CardHeader title="Localizações" to-url="/" class="mb-10" />
+        <CardHeader title="Localizações" to-url="/" class="mb-6 sm:mb-10" />
 
-        <!-- Este é o container de GRID. As classes aqui estão corretas. -->
+
         <div
-            class="mt-15 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 xl:grid-cols-6 gap-x-6 gap-y-12 justify-items-center">
+            class="mt-15 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 xl:grid-cols-6 gap-4 sm:gap-x-6 sm:gap-y-12 justify-items-center">
 
-            <!-- CARD CORRIGIDO: Removi as classes de grid daqui. -->
+
             <div v-for="currentLocation in listOfLocations.slice(0, 12)" :key="currentLocation.id"
                 class="relative rounded-lg p-5 pt-12 w-full max-w-[220px] h-[250px] flex flex-col shadow-lg border border-gray-700 transition-transform hover:-translate-y-1"
                 :class="isDarkmode ? 'bg-[#313234] border-gray-700 text-white' : 'bg-[#f9f9f9] border-none text-black'">

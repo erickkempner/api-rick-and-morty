@@ -1,14 +1,14 @@
 <template>
-    <div class="px-4 py-6" v-show="getCategory == 'episodes' || getCategory == 'all'">
+    <div class="px-2 py-4 sm:px-4 sm:py-6" v-show="getCategory == 'episodes' || getCategory == 'all'">
 
 
         <div class="flex flex-col sm:flex-row justify-between items-center text-white mb-8 gap-4">
 
 
         </div>
-        <CardHeader title="Episódios" toUrl="/" />
+        <CardHeader title="Episódios" toUrl="/" />
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 justify-items-center">
 
             <div v-for="currentEpisode in listOfEpisodes?.slice(0, 8) || []" :key="currentEpisode.id"
                 class=" rounded-lg p-5 w-full max-w-[340px] h-[230px] flex flex-col shadow-lg border border-gray-700 transition-transform hover:-translate-y-1"

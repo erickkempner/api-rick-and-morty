@@ -1,13 +1,13 @@
 <template>
 
-    <div class="px-4 py-6" v-show="getCategory == 'characters' || getCategory == 'all'">
+    <div class="px-2 py-4 sm:px-4 sm:py-6" v-show="getCategory == 'characters' || getCategory == 'all'">
 
 
-        <CardHeader title="Personagens" toUrl="/" />
+        <CardHeader title="Personagens" toUrl="/" :seeAll="!seeAll" />
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 justify-items-center">
 
-            <div v-for="currentCharacter in listOfCharacters.slice(0, 8)" :key="currentCharacter.id"
+            <div v-for="currentCharacter in listOfCharacters.slice(0, maxPosts())" :key="currentCharacter.id"
                 class="bg-[#313234] rounded-lg p-5 w-full max-w-[340px] h-[500px] flex flex-col shadow-lg border  transition-transform hover:-translate-y-1"
                 :class="isDarkmode ? 'bg-[#313234] border-gray-700 text-white' : 'bg-[#f9f9f9] border-none text-black'">
 
@@ -71,7 +71,12 @@ const { isFavorite } = storeToRefs(favoriteStore);
 const categoryStore = useCategorySearchStore()
 const { getCategory } = storeToRefs(categoryStore)
 
-defineProps<{
-    listOfCharacters: Character[]
+const maxPosts = () => {
+    return seeAll ? listOfCharacters.length : 8
+}
+
+const { listOfCharacters, seeAll } = defineProps<{
+    listOfCharacters: Character[],
+    seeAll?: boolean
 }>()
 </script>

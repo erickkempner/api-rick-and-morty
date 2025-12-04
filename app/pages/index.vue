@@ -1,6 +1,5 @@
 <template>
     <div>
-
         <CharacterListing />
         <EpisodeListing />
         <LocationsListing />

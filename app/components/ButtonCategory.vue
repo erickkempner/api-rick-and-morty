@@ -1,6 +1,7 @@
 <template>
-    <button class="border-2 border-cyan-400 rounded-3xl p-2 cursor-pointer"
-        :class="[isDarkmode ? 'bg-[#313234] text-white' : 'bg-[#f9f9f9] text-black', getCategory == category ? 'bg-black text-white' : '']">
+    <button
+        class="border-2 border-cyan-400 rounded-3xl px-3 py-2 md:px-4 md:py-2 cursor-pointer text-sm md:text-base whitespace-nowrap"
+        :class="[isDarkmode ? 'bg-[#313234] text-white' : 'bg-[#f9f9f9] text-black', getCategory == category ? 'bg-cyan-400 text-black font-bold' : '']">
         <Icon :name="icon" class="shrink-0" /> {{ title }}
     </button>
 </template>
