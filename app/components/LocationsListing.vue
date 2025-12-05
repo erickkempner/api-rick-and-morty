@@ -1,15 +1,79 @@
 <template>
     <div>
-        <CardLocations :listOfLocations="dataLocation" />
+        <div v-if="isLoading" class="relative min-h-[400px] flex items-center justify-center">
+            <div class="text-center">
+                <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500" />
+                <p class="mt-4 text-gray-400">Carregando localizações...</p>
+            </div>
+        </div>
+        <div v-else>
+            <CardLocations :listOfLocations="dataLocation" />
+        </div>
+
+        <Pagination v-if="pagePath" :current-page="currentPage" :total-count="totalCount" :items-per-page="20"
+            @update:current-page="handlePageUpdate" />
     </div>
 </template>
 
 <script setup lang="ts">
-import type { ApiResponse } from '~/types/index';
+import { locationService } from '~/services/locationService';
+import type { Location } from '~/types/index';
+import { usePagesLocationStore } from '~/stores/pagesLocation';
 
-const { data } = await useFetch<ApiResponse>('https://rickandmortyapi.com/api/location/', { cache: 'force-cache', key: 'location-list' })
+const pagesStore = usePagesLocationStore()
+const isLoading = ref(false)
+const route = useRoute()
+const router = useRouter()
 
-const dataLocation = data.value?.results
+// Use storeToRefs to ensure reactivity
+const { totalCount } = storeToRefs(pagesStore)
+
+// Initialize from URL query or store
+const initialPage = route.query.page ? Number(route.query.page) : pagesStore.currentPage
+
+// Fetch initial data
+const { data } = await locationService.list({ page: initialPage })
+
+const dataLocation = ref<Location[]>(data.value?.results || [])
+const currentPage = ref(initialPage)
+
+// Update store with initial values
+pagesStore.setPage(initialPage)
+pagesStore.setTotalCount(data.value?.info.count || 126)
+
+const pagePath = computed(() => {
+    if (route.path == '/') {
+        return false
+    }
+    return true
+})
+
+// Handle page update from Pagination component
+const handlePageUpdate = async (newPage: number) => {
+    if (newPage === currentPage.value) {
+        return
+    }
+
+    currentPage.value = newPage
+    isLoading.value = true
+
+    try {
+        // Update store
+        pagesStore.setPage(newPage)
+
+        // Update URL
+        await router.push({ query: { page: newPage.toString() } })
+
+        // Fetch new data
+        const { data: newData } = await locationService.list({ page: newPage })
+        dataLocation.value = newData.value?.results || []
+        pagesStore.setTotalCount(newData.value?.info.count || 126)
+    } catch (error) {
+        console.error('LocationsListing - Error updating page:', error)
+    } finally {
+        isLoading.value = false
+    }
+}
 </script>
 
 <style scoped></style>

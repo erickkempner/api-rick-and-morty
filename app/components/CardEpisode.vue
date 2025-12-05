@@ -6,11 +6,11 @@
 
 
         </div>
-        <CardHeader title="Episódios" toUrl="/" />
+        <CardHeader title="Episódios" toUrl="/" :seeAll="!seeAll" />
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 justify-items-center">
 
-            <div v-for="currentEpisode in listOfEpisodes?.slice(0, 8) || []" :key="currentEpisode.id"
+            <div v-for="currentEpisode in listOfEpisodes?.slice(0, maxPosts()) || []" :key="currentEpisode.id"
                 class=" rounded-lg p-5 w-full max-w-[340px] h-[230px] flex flex-col shadow-lg border border-gray-700 transition-transform hover:-translate-y-1"
                 :class="isDarkmode ? 'bg-[#313234] border-gray-700 text-white' : 'bg-[#f9f9f9] border-none text-black'">
 
@@ -74,8 +74,13 @@ const { isFavorite } = storeToRefs(favoriteEpisodeStore);
 
 const categoryStore = useCategorySearchStore()
 const { getCategory } = storeToRefs(categoryStore)
-defineProps<{
-    listOfEpisodes: Episode[]
+
+const maxPosts = () => {
+    return seeAll ? listOfEpisodes.length : 8
+}
+const { listOfEpisodes, seeAll } = defineProps<{
+    listOfEpisodes: Episode[],
+    seeAll: boolean
 }>()
 </script>
 

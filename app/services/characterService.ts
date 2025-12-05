@@ -17,5 +17,9 @@ export const characterService = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   list(params?: any) {
     return useApi<ApiResponse<Character>>('/character', { params })
+  },
+
+  search(params: string) {
+    return useApi<ApiResponse<Character>>(`/character?name=${params}`)
   }
 }

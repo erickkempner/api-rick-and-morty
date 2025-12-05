@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-export const usePagesStore = defineStore('pages', {
+export const usePagesEpisodeStore = defineStore('pagesEpisodes', {
   state: () => ({
     currentPage: 1,
     totalCount: 0,

@@ -3,7 +3,7 @@
         class="flex flex-col md:flex-row justify-between items-center h-auto md:h-40 py-4 md:py-0 gap-4 md:gap-0 px-4 md:px-0"
         :class="isDarkmodeStore.isDarkmode ? 'text-white' : 'text-black'">
         <div class="flex justify-center md:justify-start w-full md:w-auto">
-            <NuxtImg :src="logo" alt="Logo" class="w-48 sm:w-52 md:w-60 cursor-pointer" />
+            <NuxtImg :src="logo" alt="Logo" class="w-48 sm:w-52 md:w-60 cursor-pointer" @click="navigateTo('/')" />
         </div>
         <div class="flex flex-row gap-3 md:gap-4 justify-center w-full md:w-auto">
             <div
