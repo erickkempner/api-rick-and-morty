@@ -10,11 +10,11 @@
 
         <!-- Content -->
         <div v-else>
-            <CardLocations :listOfLocations="dataLocation" :seeAll="noCategory" />
+            <CardLocations :listOfLocations="dataLocation" :seeAll="true" />
         </div>
 
         <!-- Hide pagination when searching -->
-        <Pagination v-if="pagePath" :current-page="currentPage" :total-count="totalCount / 2" :items-per-page="12"
+        <Pagination v-if="pagePath" :current-page="currentPage" :total-count="totalCount / 2" :items-per-page="20"
             @update:current-page="handlePageUpdate" />
     </div>
 </template>

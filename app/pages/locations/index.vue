@@ -1,6 +1,8 @@
 <template>
     <div>
         <LocationsListing :noCategory="true" />
+        <Footer />
+
     </div>
 </template>
 

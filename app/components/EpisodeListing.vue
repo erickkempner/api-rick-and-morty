@@ -10,7 +10,7 @@
             <CardEpisode :listOfEpisodes="dataEpisode" :seeAll="noCategory" />
         </div>
 
-        <Pagination v-if="pagePath" :currentPage="currentPage" :totalCount="totalCount / 2" :itemsPerPage="8"
+        <Pagination v-if="pagePath" :currentPage="currentPage" :totalCount="totalCount / 2" :itemsPerPage="20"
             @update:currentPage="handlePageUpdate" />
     </div>
 </template>

@@ -6,7 +6,7 @@
 
 
         </div>
-        <CardHeader title="Episódios" toUrl="/episodes/" :seeAll="seeAll" />
+        <CardHeader title="Episódios" toUrl="/episodes/" :seeAll="true" />
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 justify-items-center">
 
@@ -75,8 +75,12 @@ const { isFavorite } = storeToRefs(favoriteEpisodeStore);
 const categoryStore = useCategorySearchStore()
 const { getCategory } = storeToRefs(categoryStore)
 
-const maxPosts = () => {
-    return seeAll ? listOfEpisodes.length : 8
+const route = useRoute()
+const maxPosts = (): number => {
+    if (route.path == '/') {
+        return 8
+    }
+    return 20
 }
 const { listOfEpisodes, seeAll } = defineProps<{
     listOfEpisodes: Episode[],

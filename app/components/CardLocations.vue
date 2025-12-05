@@ -64,8 +64,12 @@ const { isFavorite } = storeToRefs(favoriteLocationStore);
 const categoryStore = useCategorySearchStore()
 const { getCategory } = storeToRefs(categoryStore)
 
-const maxPosts = () => {
-    return seeAll ? 12 : 8
+const route = useRoute()
+const maxPosts = (): number => {
+    if (route.path == '/') {
+        return 12
+    }
+    return 20
 }
 const { listOfLocations, seeAll } = defineProps<{
     listOfLocations: Location[],

@@ -3,7 +3,7 @@
     <div class="px-2 py-4 sm:px-4 sm:py-6" v-show="getCategory == 'characters' || getCategory == 'all'">
 
 
-        <CardHeader title="Personagens" toUrl="/characters" :seeAll="!seeAll" />
+        <CardHeader title="Personagens" toUrl="/characters" :seeAll="true" />
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 justify-items-center">
 
@@ -71,8 +71,12 @@ const { isFavorite } = storeToRefs(favoriteStore);
 const categoryStore = useCategorySearchStore()
 const { getCategory } = storeToRefs(categoryStore)
 
-const maxPosts = () => {
-    return seeAll ? listOfCharacters.length : 8
+const route = useRoute()
+const maxPosts = (): number => {
+    if (route.path == '/') {
+        return 8
+    }
+    return 20
 }
 
 const { listOfCharacters, seeAll } = defineProps<{

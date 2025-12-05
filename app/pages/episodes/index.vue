@@ -1,6 +1,8 @@
 <template>
     <div>
         <EpisodeListing :noCategory="true" />
+        <Footer />
+
     </div>
 </template>
 
