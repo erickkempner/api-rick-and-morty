@@ -13,12 +13,12 @@
 
         <!-- Content -->
         <div v-else>
-            <CardLocations :listOfLocations="dataLocation" :seeAll="true" />
+            <CardLocations :listOfLocations="displayedLocations" :seeAll="true" />
         </div>
 
         <!-- Hide pagination when searching -->
-        <Pagination v-if="pagePath" :current-page="currentPage" :total-count="totalCount / 2" :items-per-page="20"
-            @update:current-page="handlePageUpdate" />
+        <Pagination v-if="pagePath && !searchTerm" :current-page="currentPage" :total-count="totalCount / 2"
+            :items-per-page="20" @update:current-page="handlePageUpdate" />
     </div>
 </template>
 
@@ -26,6 +26,7 @@
 import { locationService } from '~/services/locationService';
 import type { Location } from '~/types';
 import { usePagesLocationStore } from '~/stores/pagesLocation';
+import { useSearchStore } from '~/stores/search';
 
 const { noCategory } = defineProps<{ noCategory: boolean }>();
 
@@ -33,9 +34,11 @@ const isLoading = ref(false)
 const route = useRoute()
 const router = useRouter()
 const pagesStore = usePagesLocationStore()
+const searchStore = useSearchStore()
 
 // Use storeToRefs to ensure reactivity
 const { totalCount } = storeToRefs(pagesStore)
+const { locationResults, isSearching, searchTerm } = storeToRefs(searchStore)
 
 // Initialize from URL query or store
 const initialPage = route.query.page ? Number(route.query.page) : pagesStore.currentPage
@@ -49,6 +52,25 @@ const currentPage = ref(initialPage)
 // Update store with initial values
 pagesStore.setPage(initialPage)
 pagesStore.setTotalCount(data.value?.info.count || 126)
+
+// Clear search when component mounts to ensure clean state
+onMounted(() => {
+    searchStore.clearSearch()
+})
+
+// Computed para decidir quais localizações mostrar
+const displayedLocations = computed(() => {
+    // Se houver uma busca ativa, mostra os resultados da busca
+    if (searchTerm.value && locationResults.value.length > 0) {
+        return locationResults.value
+    }
+    // Se está buscando mas não tem resultados, mostra array vazio
+    if (searchTerm.value && isSearching.value) {
+        return []
+    }
+    // Caso contrário, mostra as localizações da paginação normal
+    return dataLocation.value
+})
 
 const pagePath = computed(() => {
     if (route.path === '/') {

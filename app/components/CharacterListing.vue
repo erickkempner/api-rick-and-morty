@@ -36,7 +36,7 @@ const searchStore = useSearchStore()
 
 // Use storeToRefs to ensure reactivity
 const { totalCount } = storeToRefs(pagesStore)
-const { searchResults, isSearching, searchTerm } = storeToRefs(searchStore)
+const { characterResults, isSearching, searchTerm } = storeToRefs(searchStore)
 
 // Initialize from URL query or store
 const initialPage = route.query.page ? Number(route.query.page) : pagesStore.currentPage
@@ -51,11 +51,16 @@ const currentPage = ref(initialPage)
 pagesStore.setPage(initialPage)
 pagesStore.setTotalCount(data.value?.info.count || 826)
 
+// Clear search when component mounts to ensure clean state
+onMounted(() => {
+    searchStore.clearSearch()
+})
+
 // Computed para decidir quais personagens mostrar
 const displayedCharacters = computed(() => {
     // Se houver uma busca ativa, mostra os resultados da busca
-    if (searchTerm.value && searchResults.value.length > 0) {
-        return searchResults.value
+    if (searchTerm.value && characterResults.value.length > 0) {
+        return characterResults.value
     }
     // Se está buscando mas não tem resultados, mostra array vazio
     if (searchTerm.value && isSearching.value) {

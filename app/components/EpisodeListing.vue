@@ -10,26 +10,31 @@
             </div>
         </div>
         <div v-else>
-            <CardEpisode :listOfEpisodes="dataEpisode" :seeAll="noCategory" />
+            <CardEpisode :listOfEpisodes="displayedEpisodes" :seeAll="noCategory" />
         </div>
 
-        <Pagination v-if="pagePath" :currentPage="currentPage" :totalCount="totalCount / 2" :itemsPerPage="20"
-            @update:currentPage="handlePageUpdate" />
+        <Pagination v-if="pagePath && !searchTerm" :currentPage="currentPage" :totalCount="totalCount / 2"
+            :itemsPerPage="20" @update:currentPage="handlePageUpdate" />
     </div>
 </template>
 
 <script setup lang="ts">
 import { episodesService } from '~/services/episodesService';
-import type { Episode } from '~/types/index';
+import type { Episode } from '~/types';
 import { usePagesEpisodeStore } from '~/stores/pagesEpisode';
+import { useSearchStore } from '~/stores/search';
 
-const pagesStore = usePagesEpisodeStore()
+const { noCategory } = defineProps<{ noCategory: boolean }>();
+
 const isLoading = ref(false)
 const route = useRoute()
 const router = useRouter()
+const pagesStore = usePagesEpisodeStore()
+const searchStore = useSearchStore()
 
 // Use storeToRefs to ensure reactivity
 const { totalCount } = storeToRefs(pagesStore)
+const { episodeResults, isSearching, searchTerm } = storeToRefs(searchStore)
 
 // Initialize from URL query or store
 const initialPage = route.query.page ? Number(route.query.page) : pagesStore.currentPage
@@ -43,6 +48,25 @@ const currentPage = ref(initialPage)
 // Update store with initial values
 pagesStore.setPage(initialPage)
 pagesStore.setTotalCount(data.value?.info.count || 51)
+
+// Clear search when component mounts to ensure clean state
+onMounted(() => {
+    searchStore.clearSearch()
+})
+
+// Computed para decidir quais episódios mostrar
+const displayedEpisodes = computed(() => {
+    // Se houver uma busca ativa, mostra os resultados da busca
+    if (searchTerm.value && episodeResults.value.length > 0) {
+        return episodeResults.value
+    }
+    // Se está buscando mas não tem resultados, mostra array vazio
+    if (searchTerm.value && isSearching.value) {
+        return []
+    }
+    // Caso contrário, mostra os episódios da paginação normal
+    return dataEpisode.value
+})
 
 const pagePath = computed(() => {
     if (route.path === '/') {
@@ -78,8 +102,6 @@ const handlePageUpdate = async (newPage: number) => {
         isLoading.value = false
     }
 }
-
-const { noCategory = true } = defineProps<{ noCategory?: boolean }>()
 </script>
 
 <style scoped></style>

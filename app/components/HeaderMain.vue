@@ -25,6 +25,8 @@
 
 <script lang="ts" setup>
 import { characterService } from '~/services/characterService'
+import { episodesService } from '~/services/episodesService'
+import { locationService } from '~/services/locationService'
 import { useSearchStore } from '~/stores/search';
 const route = useRoute()
 
@@ -55,16 +57,36 @@ const searchFunc = async () => {
         searchStore.setIsSearching(true)
         searchStore.setSearchTerm(search.value)
 
-        const { data } = await characterService.search(search.value)
+        // Busca em paralelo nos 3 endpoints
+        const [charactersData, episodesData, locationsData] = await Promise.all([
+            characterService.search(search.value),
+            episodesService.search(search.value),
+            locationService.search(search.value)
+        ])
 
-        if (data.value?.results) {
-            searchStore.setSearchResults(data.value.results)
+        // Salva resultados
+        if (charactersData.data.value?.results) {
+            searchStore.setCharacterResults(charactersData.data.value.results)
         } else {
-            searchStore.setSearchResults([])
+            searchStore.setCharacterResults([])
+        }
+
+        if (episodesData.data.value?.results) {
+            searchStore.setEpisodeResults(episodesData.data.value.results)
+        } else {
+            searchStore.setEpisodeResults([])
+        }
+
+        if (locationsData.data.value?.results) {
+            searchStore.setLocationResults(locationsData.data.value.results)
+        } else {
+            searchStore.setLocationResults([])
         }
     } catch (error) {
         console.error('Erro na busca:', error)
-        searchStore.setSearchResults([])
+        searchStore.setCharacterResults([])
+        searchStore.setEpisodeResults([])
+        searchStore.setLocationResults([])
     } finally {
         searchStore.setIsSearching(false)
     }
@@ -75,6 +97,14 @@ watch(search, (newValue) => {
     if (newValue.length === 0) {
         searchStore.clearSearch()
     }
+})
+
+// Limpa a busca quando muda de página (qualquer mudança de rota)
+watch(() => route.path, (newPath, oldPath) => {
+    console.log('Route changed from', oldPath, 'to', newPath)
+    console.log('Clearing search on route change...')
+    search.value = ''
+    searchStore.clearSearch()
 })
 </script>
 
