@@ -55,35 +55,42 @@ const searchFunc = async () => {
 
     try {
         searchStore.setIsSearching(true)
-        searchStore.setSearchTerm(search.value)
+        const searchValue = search.value
+        searchStore.setSearchTerm(searchValue)
+
+
+        // Limpa resultados anteriores antes de buscar
+        searchStore.setCharacterResults([])
+        searchStore.setEpisodeResults([])
+        searchStore.setLocationResults([])
 
         // Busca em paralelo nos 3 endpoints
         const [charactersData, episodesData, locationsData] = await Promise.all([
-            characterService.search(search.value),
-            episodesService.search(search.value),
-            locationService.search(search.value)
+            characterService.search(searchValue).catch(() => {
+                return { data: { value: null } }
+            }),
+            episodesService.search(searchValue).catch(() => {
+                return { data: { value: null } }
+            }),
+            locationService.search(searchValue).catch(() => {
+                return { data: { value: null } }
+            })
         ])
 
-        // Salva resultados
-        if (charactersData.data.value?.results) {
-            searchStore.setCharacterResults(charactersData.data.value.results)
-        } else {
-            searchStore.setCharacterResults([])
-        }
+        // Salva resultados (se vazio, mantém array vazio)
+        const charResults = charactersData.data.value?.results || []
+        const episResults = episodesData.data.value?.results || []
+        const locResults = locationsData.data.value?.results || []
 
-        if (episodesData.data.value?.results) {
-            searchStore.setEpisodeResults(episodesData.data.value.results)
-        } else {
-            searchStore.setEpisodeResults([])
-        }
 
-        if (locationsData.data.value?.results) {
-            searchStore.setLocationResults(locationsData.data.value.results)
-        } else {
-            searchStore.setLocationResults([])
-        }
+        searchStore.setCharacterResults(charResults)
+        searchStore.setEpisodeResults(episResults)
+        searchStore.setLocationResults(locResults)
+
+
     } catch (error) {
-        console.error('Erro na busca:', error)
+
+        // Em caso de erro, garante que tudo está limpo MAS mantém o searchTerm
         searchStore.setCharacterResults([])
         searchStore.setEpisodeResults([])
         searchStore.setLocationResults([])
@@ -100,9 +107,7 @@ watch(search, (newValue) => {
 })
 
 // Limpa a busca quando muda de página (qualquer mudança de rota)
-watch(() => route.path, (newPath, oldPath) => {
-    console.log('Route changed from', oldPath, 'to', newPath)
-    console.log('Clearing search on route change...')
+watch(() => route.path, () => {
     search.value = ''
     searchStore.clearSearch()
 })

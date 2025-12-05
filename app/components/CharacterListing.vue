@@ -51,20 +51,16 @@ const currentPage = ref(initialPage)
 pagesStore.setPage(initialPage)
 pagesStore.setTotalCount(data.value?.info.count || 826)
 
-// Clear search when component mounts to ensure clean state
-onMounted(() => {
-    searchStore.clearSearch()
-})
-
 // Computed para decidir quais personagens mostrar
 const displayedCharacters = computed(() => {
-    // Se houver uma busca ativa, mostra os resultados da busca
-    if (searchTerm.value && characterResults.value.length > 0) {
+    // Se há um termo de busca ativo
+    if (searchTerm.value) {
+        // Se está buscando, mostra vazio (loading)
+        if (isSearching.value) {
+            return []
+        }
+        // Se terminou de buscar, mostra os resultados (pode ser array vazio)
         return characterResults.value
-    }
-    // Se está buscando mas não tem resultados, mostra array vazio
-    if (searchTerm.value && isSearching.value) {
-        return []
     }
     // Caso contrário, mostra os personagens da paginação normal
     return dataCharacter.value
@@ -97,8 +93,6 @@ const handlePageUpdate = async (newPage: number) => {
         const { data: newData } = await characterService.list({ page: newPage })
         dataCharacter.value = newData.value?.results || []
         pagesStore.setTotalCount(newData.value?.info.count || 826)
-    } catch (error) {
-        console.error('CharacterListing - Error updating page:', error)
     } finally {
         isLoading.value = false
     }

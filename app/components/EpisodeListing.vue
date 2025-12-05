@@ -24,7 +24,7 @@ import type { Episode } from '~/types';
 import { usePagesEpisodeStore } from '~/stores/pagesEpisode';
 import { useSearchStore } from '~/stores/search';
 
-const { noCategory } = defineProps<{ noCategory: boolean }>();
+const { noCategory = true } = defineProps<{ noCategory?: boolean }>();
 
 const isLoading = ref(false)
 const route = useRoute()
@@ -49,20 +49,16 @@ const currentPage = ref(initialPage)
 pagesStore.setPage(initialPage)
 pagesStore.setTotalCount(data.value?.info.count || 51)
 
-// Clear search when component mounts to ensure clean state
-onMounted(() => {
-    searchStore.clearSearch()
-})
-
 // Computed para decidir quais episódios mostrar
 const displayedEpisodes = computed(() => {
-    // Se houver uma busca ativa, mostra os resultados da busca
-    if (searchTerm.value && episodeResults.value.length > 0) {
+    // Se há um termo de busca ativo
+    if (searchTerm.value) {
+        // Se está buscando, mostra vazio (loading)
+        if (isSearching.value) {
+            return []
+        }
+        // Se terminou de buscar, mostra os resultados (pode ser array vazio)
         return episodeResults.value
-    }
-    // Se está buscando mas não tem resultados, mostra array vazio
-    if (searchTerm.value && isSearching.value) {
-        return []
     }
     // Caso contrário, mostra os episódios da paginação normal
     return dataEpisode.value
@@ -95,9 +91,6 @@ const handlePageUpdate = async (newPage: number) => {
         const { data: newData } = await episodesService.list({ page: newPage })
         dataEpisode.value = newData.value?.results || []
         pagesStore.setTotalCount(newData.value?.info.count || 51)
-        console.log('EpisodeListing - Data loaded successfully')
-    } catch (error) {
-        console.error('EpisodeListing - Error updating page:', error)
     } finally {
         isLoading.value = false
     }

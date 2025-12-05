@@ -1,6 +1,6 @@
 <template>
     <div>
-        <HeaderMain v-if="pagePath" :noCategory="noCategory" class="py-15 px-4" />
+        <HeaderMain v-if="pagePath" :noCategory="true" class="py-15 px-4" />
 
 
         <!-- Loading overlay -->
@@ -28,7 +28,6 @@ import type { Location } from '~/types';
 import { usePagesLocationStore } from '~/stores/pagesLocation';
 import { useSearchStore } from '~/stores/search';
 
-const { noCategory } = defineProps<{ noCategory: boolean }>();
 
 const isLoading = ref(false)
 const route = useRoute()
@@ -53,20 +52,16 @@ const currentPage = ref(initialPage)
 pagesStore.setPage(initialPage)
 pagesStore.setTotalCount(data.value?.info.count || 126)
 
-// Clear search when component mounts to ensure clean state
-onMounted(() => {
-    searchStore.clearSearch()
-})
-
 // Computed para decidir quais localizações mostrar
 const displayedLocations = computed(() => {
-    // Se houver uma busca ativa, mostra os resultados da busca
-    if (searchTerm.value && locationResults.value.length > 0) {
+    // Se há um termo de busca ativo
+    if (searchTerm.value) {
+        // Se está buscando, mostra vazio (loading)
+        if (isSearching.value) {
+            return []
+        }
+        // Se terminou de buscar, mostra os resultados (pode ser array vazio)
         return locationResults.value
-    }
-    // Se está buscando mas não tem resultados, mostra array vazio
-    if (searchTerm.value && isSearching.value) {
-        return []
     }
     // Caso contrário, mostra as localizações da paginação normal
     return dataLocation.value
@@ -99,8 +94,6 @@ const handlePageUpdate = async (newPage: number) => {
         const { data: newData } = await locationService.list({ page: newPage })
         dataLocation.value = newData.value?.results || []
         pagesStore.setTotalCount(newData.value?.info.count || 126)
-    } catch (error) {
-        console.error('LocationsListing - Error updating page:', error)
     } finally {
         isLoading.value = false
     }
