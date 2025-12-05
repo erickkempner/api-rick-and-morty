@@ -1,5 +1,8 @@
 <template>
     <div>
+        <HeaderMain v-if="pagePath" :noCategory="noCategory" class="py-15 px-4" />
+
+
         <!-- Loading overlay -->
         <div v-if="isLoading" class="relative min-h-[400px] flex items-center justify-center">
             <div class="text-center">
@@ -48,7 +51,7 @@ pagesStore.setPage(initialPage)
 pagesStore.setTotalCount(data.value?.info.count || 126)
 
 const pagePath = computed(() => {
-    if (route.path == '/') {
+    if (route.path === '/') {
         return false
     }
     return true

@@ -77,7 +77,7 @@ const { getCategory } = storeToRefs(categoryStore)
 
 const route = useRoute()
 const maxPosts = (): number => {
-    if (route.path == '/') {
+    if (route.path === '/') {
         return 8
     }
     return 20

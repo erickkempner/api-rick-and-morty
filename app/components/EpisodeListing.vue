@@ -1,5 +1,8 @@
 <template>
     <div>
+        <HeaderMain v-if="pagePath" :noCategory="noCategory" class="py-15 px-4" />
+
+
         <div v-if="isLoading" class="relative min-h-[400px] flex items-center justify-center">
             <div class="text-center">
                 <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500" />
@@ -42,7 +45,7 @@ pagesStore.setPage(initialPage)
 pagesStore.setTotalCount(data.value?.info.count || 51)
 
 const pagePath = computed(() => {
-    if (route.path == '/') {
+    if (route.path === '/') {
         return false
     }
     return true

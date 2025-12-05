@@ -9,7 +9,7 @@
             <Icon name="material-symbols:search-rounded" class="w-6 h-6 shrink-0 cursor-pointer"
                 :class="isDarkmode ? 'text-white' : 'text-black'" @click.prevent="searchFunc()" />
         </div>
-        <div v-if="!noCategory" class="flex flex-row gap-2 md:gap-3 items-center justify-center flex-wrap">
+        <div v-if="categoryShow()" class="flex flex-row gap-2 md:gap-3 items-center justify-center flex-wrap">
             <ButtonCategory title="Personagens" category="characters"
                 @click="getCategory == 'characters' ? categoryStore.setCategory('all') : categoryStore.setCategory('characters')"
                 icon="material-symbols:person-3-outline" />
@@ -26,6 +26,7 @@
 <script lang="ts" setup>
 import { characterService } from '~/services/characterService'
 import { useSearchStore } from '~/stores/search';
+const route = useRoute()
 
 const isDarkmodeStore = useIsdarkmodeStore()
 const { isDarkmode } = storeToRefs(isDarkmodeStore)
@@ -33,7 +34,12 @@ const { isDarkmode } = storeToRefs(isDarkmodeStore)
 const categoryStore = useCategorySearchStore()
 const { getCategory }: { getCategory: Ref<string> } = storeToRefs(categoryStore)
 
-const { noCategory } = defineProps<{ noCategory: boolean }>()
+const categoryShow = (): boolean => {
+    if (route.path == '/') {
+        return true
+    }
+    return false
+}
 
 const search = ref('')
 const searchStore = useSearchStore()

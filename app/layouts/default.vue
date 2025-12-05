@@ -4,7 +4,7 @@
         <div class=" w-full flex justify-center" :class="isDarkAndPathValid()">
             <div class="max-w-[1400px] w-full">
                 <Header />
-                <Hero v-if="pathValid()" />
+                <Hero v-show="pathValid()" />
             </div>
 
         </div>
@@ -21,10 +21,10 @@ const route = useRoute()
 const routePath = route.path
 
 const pathValid = () => {
-    if (routePath !== '/') {
-        return false
+    if (routePath === '/') {
+        return true
     }
-    return true
+    return false
 }
 
 const isDarkAndPathValid = () => {

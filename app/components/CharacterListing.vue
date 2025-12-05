@@ -66,7 +66,7 @@ const displayedCharacters = computed(() => {
 })
 
 const pagePath = computed(() => {
-    if (route.path == '/') {
+    if (route.path === '/') {
         return false
     }
     return true
