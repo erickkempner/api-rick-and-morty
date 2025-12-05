@@ -1,13 +1,11 @@
 <template>
     <div>
-        
+        <LocationsListing :noCategory="true" />
     </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 // Component logic here
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

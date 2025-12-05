@@ -1,29 +1,35 @@
 <template>
     <div>
+        <!-- Loading overlay -->
         <div v-if="isLoading" class="relative min-h-[400px] flex items-center justify-center">
             <div class="text-center">
-                <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500" />
+                <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
                 <p class="mt-4 text-gray-400">Carregando localizações...</p>
             </div>
         </div>
+
+        <!-- Content -->
         <div v-else>
-            <CardLocations :listOfLocations="dataLocation" />
+            <CardLocations :listOfLocations="dataLocation" :seeAll="noCategory" />
         </div>
 
-        <Pagination v-if="pagePath" :current-page="currentPage" :total-count="totalCount" :items-per-page="20"
+        <!-- Hide pagination when searching -->
+        <Pagination v-if="pagePath" :current-page="currentPage" :total-count="totalCount / 2" :items-per-page="12"
             @update:current-page="handlePageUpdate" />
     </div>
 </template>
 
 <script setup lang="ts">
 import { locationService } from '~/services/locationService';
-import type { Location } from '~/types/index';
+import type { Location } from '~/types';
 import { usePagesLocationStore } from '~/stores/pagesLocation';
 
-const pagesStore = usePagesLocationStore()
+const { noCategory } = defineProps<{ noCategory: boolean }>();
+
 const isLoading = ref(false)
 const route = useRoute()
 const router = useRouter()
+const pagesStore = usePagesLocationStore()
 
 // Use storeToRefs to ensure reactivity
 const { totalCount } = storeToRefs(pagesStore)

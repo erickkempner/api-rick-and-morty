@@ -1,11 +1,10 @@
 <template>
     <div>
-        <EpisodeListing />
-
+        <EpisodeListing :noCategory="true" />
     </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 // Component logic here
 </script>
 
