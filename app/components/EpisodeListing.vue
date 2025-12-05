@@ -7,11 +7,11 @@
             </div>
         </div>
         <div v-else>
-            <CardEpisode :listOfEpisodes="dataEpisode" :seeAll="!noCategory" />
+            <CardEpisode :listOfEpisodes="dataEpisode" :seeAll="noCategory" />
         </div>
 
-        <Pagination v-if="pagePath" :current-page="currentPage" :total="totalCount" :items-per-page="20"
-            @update:current-page="handlePageUpdate" />
+        <Pagination v-if="pagePath" :currentPage="currentPage" :totalCount="totalCount / 2" :itemsPerPage="8"
+            @update:currentPage="handlePageUpdate" />
     </div>
 </template>
 

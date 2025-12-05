@@ -13,7 +13,7 @@
 
         <!-- Content -->
         <div v-else>
-            <CardCharacter :listOfCharacters="displayedCharacters" :seeAll="noCategory" />
+            <CardCharacter :listOfCharacters="displayedCharacters" :seeAll="!noCategory" />
         </div>
 
         <!-- Hide pagination when searching -->

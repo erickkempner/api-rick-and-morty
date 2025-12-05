@@ -1,7 +1,7 @@
 <template>
     <div class="px-2 py-4 sm:px-4 sm:py-6" v-show="getCategory == 'locations' || getCategory == 'all'">
         <div class="flex flex-col sm:flex-row justify-between items-center text-white mb-8 gap-4" />
-        <CardHeader title="Localizações" to-url="/" class="mb-6 sm:mb-10" />
+        <CardHeader title="Localizações" toUrl="/locations" class="mb-6 sm:mb-10" />
 
 
         <div
