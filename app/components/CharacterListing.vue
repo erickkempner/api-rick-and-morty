@@ -1,6 +1,6 @@
 <template>
     <div>
-        <HeaderMain :noCategory="noCategory" class="py-15 px-4" />
+        <HeaderMain :noCategory="noCategory" v-if="!showSearchBar" class="py-15 px-4" />
 
         <!-- Loading overlay -->
         <div v-if="isLoading" class="relative min-h-[400px] flex items-center justify-center">
@@ -13,7 +13,7 @@
 
         <!-- Content -->
         <div v-else>
-            <CardCharacter :listOfCharacters="displayedCharacters" :seeAll="noCategory" />
+            <CardCharacter :text="text" :listOfCharacters="displayedCharacters" :seeAll="noCategory" />
         </div>
 
         <!-- Hide pagination when searching -->
@@ -27,6 +27,8 @@ import { characterService } from '~/services/characterService';
 import type { Character } from '~/types';
 import { usePagesStore } from '~/stores/pagesCharacter';
 import { useSearchStore } from '~/stores/search';
+import { useFavoriteStore } from '~/stores/favoriteCharacter';
+
 
 const isLoading = ref(false)
 const route = useRoute()
@@ -46,6 +48,22 @@ const { data } = await characterService.list({ page: initialPage })
 
 const dataCharacter = ref<Character[]>(data.value?.results || [])
 const currentPage = ref(initialPage)
+const favoriteStore = useFavoriteStore()
+const { favoriteList } = storeToRefs(favoriteStore)
+const favoriteCharactersData = ref<Character[]>([])
+
+// Fetch favorites if on favorites page
+if (route.path === '/favorites') {
+    if (favoriteList.value.length > 0) {
+        const { data: favoritesData } = await characterService.getMany(favoriteList.value)
+        // Handle single object return from API when only one ID is requested
+        if (Array.isArray(favoritesData.value)) {
+            favoriteCharactersData.value = favoritesData.value
+        } else if (favoritesData.value) {
+            favoriteCharactersData.value = [favoritesData.value]
+        }
+    }
+}
 
 // Update store with initial values
 pagesStore.setPage(initialPage)
@@ -63,11 +81,14 @@ const displayedCharacters = computed(() => {
         return characterResults.value
     }
     // Caso contrário, mostra os personagens da paginação normal
+    if (route.path === '/favorites') {
+        return favoriteCharactersData.value
+    }
     return dataCharacter.value
 })
 
 const pagePath = computed(() => {
-    if (route.path === '/') {
+    if (route.path === '/' || route.path === '/favorites') {
         return false
     }
     return true
@@ -98,7 +119,8 @@ const handlePageUpdate = async (newPage: number) => {
     }
 }
 
-const { noCategory = true } = defineProps<{ noCategory?: boolean }>()
+
+const { noCategory = true, showSearchBar = true, text = 'Personagens' } = defineProps<{ noCategory?: boolean, showSearchBar?: boolean, text?: string }>()
 </script>
 
 <style scoped></style>

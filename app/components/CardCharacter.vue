@@ -3,7 +3,7 @@
     <div class="px-2 py-4 sm:px-4 sm:py-6" v-show="getCategory == 'characters' || getCategory == 'all'">
 
 
-        <CardHeader title="Personagens" toUrl="/characters" :seeAll="true" />
+        <CardHeader :text="text" toUrl="/characters" :seeAll="true" />
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 justify-items-center">
 
@@ -61,6 +61,7 @@ import type { Character } from "~/types/index";
 import { useFavoriteStore } from '~/stores/favoriteCharacter'
 import { useIsdarkmodeStore } from '~/stores/isDarkmode';
 
+
 const isDarkmodeStore = useIsdarkmodeStore()
 const { isDarkmode } = storeToRefs(isDarkmodeStore)
 
@@ -79,8 +80,9 @@ const maxPosts = (): number => {
     return 20
 }
 
-const { listOfCharacters, seeAll } = defineProps<{
+const { listOfCharacters, seeAll, text } = defineProps<{
     listOfCharacters: Character[],
-    seeAll?: boolean
+    seeAll?: boolean,
+    text?: string
 }>()
 </script>

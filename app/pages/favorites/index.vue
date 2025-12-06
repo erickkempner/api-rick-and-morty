@@ -1,6 +1,9 @@
 <template>
     <div>
-        
+        <CharacterListing :showSearchBar="true" />
+        <EpisodeListing :showSearchBar="true" />
+        <LocationsListing :showSearchBar="true" />
+        <Footer />
     </div>
 </template>
 
@@ -8,6 +11,4 @@
 // Component logic here
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

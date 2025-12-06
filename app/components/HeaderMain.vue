@@ -28,6 +28,7 @@ import { characterService } from '~/services/characterService'
 import { episodesService } from '~/services/episodesService'
 import { locationService } from '~/services/locationService'
 import { useSearchStore } from '~/stores/search';
+
 const route = useRoute()
 
 const isDarkmodeStore = useIsdarkmodeStore()

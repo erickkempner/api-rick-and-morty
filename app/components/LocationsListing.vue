@@ -1,6 +1,6 @@
 <template>
     <div>
-        <HeaderMain v-if="pagePath" :noCategory="true" class="py-15 px-4" />
+        <HeaderMain v-if="pagePath && !showSearchBar" :noCategory="true" class="py-15 px-4" />
 
 
         <!-- Loading overlay -->
@@ -27,6 +27,7 @@ import { locationService } from '~/services/locationService';
 import type { Location } from '~/types';
 import { usePagesLocationStore } from '~/stores/pagesLocation';
 import { useSearchStore } from '~/stores/search';
+import { useFavoriteLocationStore } from '~/stores/favoriteLocation';
 
 
 const isLoading = ref(false)
@@ -48,6 +49,26 @@ const { data } = await locationService.list({ page: initialPage })
 const dataLocation = ref<Location[]>(data.value?.results || [])
 const currentPage = ref(initialPage)
 
+const favoriteStore = useFavoriteLocationStore()
+const { favoriteList } = storeToRefs(favoriteStore)
+const favoriteLocationsData = ref<Location[]>([])
+
+// Fetch favorites if on favorites page
+if (route.path === '/favorites') {
+    if (favoriteList.value.length > 0) {
+        const { data: favoritesData } = await locationService.getMany(favoriteList.value)
+        // Handle single object return from API when only one ID is requested
+        if (Array.isArray(favoritesData.value)) {
+            favoriteLocationsData.value = favoritesData.value
+        } else if (favoritesData.value) {
+            favoriteLocationsData.value = [favoritesData.value]
+        }
+    }
+}
+
+const { showSearchBar = true } = defineProps<{ showSearchBar?: boolean }>()
+
+
 // Update store with initial values
 pagesStore.setPage(initialPage)
 pagesStore.setTotalCount(data.value?.info.count || 126)
@@ -64,11 +85,14 @@ const displayedLocations = computed(() => {
         return locationResults.value
     }
     // Caso contrário, mostra as localizações da paginação normal
+    if (route.path === '/favorites') {
+        return favoriteLocationsData.value
+    }
     return dataLocation.value
 })
 
 const pagePath = computed(() => {
-    if (route.path === '/') {
+    if (route.path === '/' || route.path === '/favorites') {
         return false
     }
     return true
@@ -98,6 +122,7 @@ const handlePageUpdate = async (newPage: number) => {
         isLoading.value = false
     }
 }
+
 </script>
 
 <style scoped></style>

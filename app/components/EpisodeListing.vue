@@ -1,6 +1,6 @@
 <template>
     <div>
-        <HeaderMain v-if="pagePath" :noCategory="noCategory" class="py-15 px-4" />
+        <HeaderMain v-if="pagePath && !showSearchBar" :noCategory="noCategory" class="py-15 px-4" />
 
 
         <div v-if="isLoading" class="relative min-h-[400px] flex items-center justify-center">
@@ -23,14 +23,19 @@ import { episodesService } from '~/services/episodesService';
 import type { Episode } from '~/types';
 import { usePagesEpisodeStore } from '~/stores/pagesEpisode';
 import { useSearchStore } from '~/stores/search';
+import { useFavoriteEpisodeStore } from '~/stores/favoriteEpisode';
 
-const { noCategory = true } = defineProps<{ noCategory?: boolean }>();
+const { noCategory = true, showSearchBar = true } = defineProps<{ noCategory?: boolean, showSearchBar?: boolean }>();
 
 const isLoading = ref(false)
 const route = useRoute()
 const router = useRouter()
 const pagesStore = usePagesEpisodeStore()
 const searchStore = useSearchStore()
+
+const favoriteStore = useFavoriteEpisodeStore()
+const { favoriteList } = storeToRefs(favoriteStore)
+const favoriteEpisodesData = ref<Episode[]>([])
 
 // Use storeToRefs to ensure reactivity
 const { totalCount } = storeToRefs(pagesStore)
@@ -61,17 +66,32 @@ const displayedEpisodes = computed(() => {
         return episodeResults.value
     }
     // Caso contrário, mostra os episódios da paginação normal
+    if (route.path === '/favorites') {
+        return favoriteEpisodesData.value
+    }
     return dataEpisode.value
 })
 
 const pagePath = computed(() => {
-    if (route.path === '/') {
+    if (route.path === '/' || route.path === '/favorites') {
         return false
     }
     return true
 })
 
 // Handle page update from Pagination component
+if (route.path === '/favorites') {
+    if (favoriteList.value.length > 0) {
+        const { data: favoritesData } = await episodesService.getMany(favoriteList.value)
+        // Handle single object return from API when only one ID is requested
+        if (Array.isArray(favoritesData.value)) {
+            favoriteEpisodesData.value = favoritesData.value
+        } else if (favoritesData.value) {
+            favoriteEpisodesData.value = [favoritesData.value]
+        }
+    }
+}
+
 const handlePageUpdate = async (newPage: number) => {
     if (newPage === currentPage.value) {
         return
@@ -95,6 +115,8 @@ const handlePageUpdate = async (newPage: number) => {
         isLoading.value = false
     }
 }
+
+
 </script>
 
 <style scoped></style>

@@ -36,6 +36,6 @@ export const useFavoriteLocationStore = defineStore('favoriteLocations', {
 
   persist: {
     // Apenas verificamos o window, sem precisar de serializer complexo
-    storage: typeof window !== 'undefined' ? localStorage : null,
+    storage: typeof window !== 'undefined' ? localStorage : undefined,
   },
 })

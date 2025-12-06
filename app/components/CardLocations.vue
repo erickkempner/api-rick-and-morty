@@ -52,6 +52,7 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
+import type { Location } from '~/types';
 import { useIsdarkmodeStore } from '~/stores/isDarkmode';
 
 const isDarkmodeStore = useIsdarkmodeStore()
