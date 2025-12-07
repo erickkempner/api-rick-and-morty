@@ -11,6 +11,7 @@
 import { createPinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import EpisodeListing from '~/components/EpisodeListing.vue'
+import LocationsListing from '~/components/LocationsListing.vue'
 
 
 const pinia = createPinia()

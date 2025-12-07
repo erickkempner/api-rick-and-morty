@@ -1,9 +1,8 @@
 <template>
     <div>
-        <h1>Rota de personagem {{ route.params.id }}</h1>
         <MainCharacter :character="character" />
         <hr class="border border-cyan-400">
-        <CharacterListing text="Mais Personagens" />
+        <CharacterListing text="Mais Personagens" noSearch="true" />
     </div>
 </template>
 

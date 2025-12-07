@@ -11,7 +11,7 @@ export const episodesService = {
   // Buscar vários: /character/[1,2,3]
   getMany(ids: number[]) {
     const idString = ids.join(',')
-    return useApi<Episode[]>(`/episode/[${idString}]`)
+    return useApi<Episode[]>(`/episode/${idString}`)
   },
 
   // Buscar paginado

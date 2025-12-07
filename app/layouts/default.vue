@@ -1,5 +1,5 @@
 <template>
-    <div class="w-screen h-screen overflow-x-hidden">
+    <div class="w-screen h-screen overflow-x-hidden flex flex-col">
         <!-- Header com hero -->
         <div class="w-full flex justify-center" :class="isDarkAndPathValid">
             <div class="max-w-[1400px] w-full">
@@ -9,7 +9,7 @@
         </div>
 
         <!-- Main Content -->
-        <main class="w-full flex justify-center" :class="isDarkmode ? 'bg-[#313234]' : 'bg-white'">
+        <main class="w-full flex justify-center flex-1" :class="isDarkmode ? 'bg-[#313234]' : 'bg-white'">
             <div class="max-w-[1420px] w-full mx-auto h-full">
                 <slot />
             </div>
@@ -20,6 +20,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { useIsdarkmodeStore } from '~/stores/isDarkmode';
+import { useSearchStore } from '~/stores/search';
 
 const isDarkmodeStore = useIsdarkmodeStore()
 const { isDarkmode } = storeToRefs(isDarkmodeStore)
@@ -58,6 +59,12 @@ const isDarkAndPathValid = computed(() => {
     }
     // White for light mode
     return 'bg-white'
+})
+
+const searchStore = useSearchStore()
+
+watch(() => route.path, () => {
+    searchStore.clearSearch()
 })
 </script>
 

@@ -11,7 +11,7 @@ export const locationService = {
   // Buscar vários: /character/[1,2,3]
   getMany(ids: number[]) {
     const idString = ids.join(',')
-    return useApi<Location[]>(`/location/[${idString}]`)
+    return useApi<Location[]>(`/location/${idString}`)
   },
 
   // Buscar paginado

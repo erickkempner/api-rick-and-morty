@@ -10,12 +10,10 @@
 import { useIsdarkmodeStore } from '~/stores/isDarkmode';
 const isDarkmodeStore = useIsdarkmodeStore()
 
-const {category='', id=1} = defineProps<{
+const { category = 'characters', id = 1 } = defineProps<{
     id?: number,
     category?: string
 }>()
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

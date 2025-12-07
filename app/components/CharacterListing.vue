@@ -1,22 +1,19 @@
 <template>
     <div>
-        <HeaderMain :noCategory="noCategory" v-if="!showSearchBar" class="py-15 px-4" />
+        <HeaderMain v-if="!noSearch && showSearchBar" :noCategory="!noCategory" class="py-15 px-4" />
 
         <!-- Loading overlay -->
         <div v-if="isLoading" class="relative min-h-[400px] flex items-center justify-center">
             <div class="text-center">
                 <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
                 <p class="mt-4 text-gray-400">Carregando personagens...</p>
-
             </div>
         </div>
 
-        <!-- Content -->
         <div v-else>
             <CardCharacter :text="text" :listOfCharacters="displayedCharacters" :seeAll="noCategory" />
         </div>
 
-        <!-- Hide pagination when searching -->
         <Pagination v-if="pagePath && !searchTerm" :current-page="currentPage" :total-count="totalCount / 2"
             :items-per-page="20" @update:current-page="handlePageUpdate" />
     </div>
@@ -53,17 +50,26 @@ const { favoriteList } = storeToRefs(favoriteStore)
 const favoriteCharactersData = ref<Character[]>([])
 
 // Fetch favorites if on favorites page
-if (route.path === '/favorites') {
-    if (favoriteList.value.length > 0) {
-        const { data: favoritesData } = await characterService.getMany(favoriteList.value)
-        // Handle single object return from API when only one ID is requested
-        if (Array.isArray(favoritesData.value)) {
-            favoriteCharactersData.value = favoritesData.value
-        } else if (favoritesData.value) {
-            favoriteCharactersData.value = [favoritesData.value]
+const fetchFavorites = async () => {
+    if (route.path === '/favorites') {
+        if (favoriteList.value.length > 0) {
+            const { data: favoritesData } = await characterService.getMany(favoriteList.value)
+            // Handle single object return from API when only one ID is requested
+            if (Array.isArray(favoritesData.value)) {
+                favoriteCharactersData.value = favoritesData.value
+            } else if (favoritesData.value) {
+                favoriteCharactersData.value = [favoritesData.value]
+            }
+        } else {
+            favoriteCharactersData.value = []
         }
     }
 }
+
+// Watch for changes in favorites or route
+watch([favoriteList, () => route.path], () => {
+    fetchFavorites()
+}, { immediate: true })
 
 // Update store with initial values
 pagesStore.setPage(initialPage)
@@ -120,7 +126,7 @@ const handlePageUpdate = async (newPage: number) => {
 }
 
 
-const { noCategory = true, showSearchBar = true, text = 'Personagens' } = defineProps<{ noCategory?: boolean, showSearchBar?: boolean, text?: string }>()
+const { noCategory = true, showSearchBar = true, text = 'Personagens', noSearch = false } = defineProps<{ noCategory?: boolean, showSearchBar?: boolean, text?: string, noSearch?: boolean }>()
 </script>
 
 <style scoped></style>

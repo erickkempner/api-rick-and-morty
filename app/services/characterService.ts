@@ -10,7 +10,7 @@ export const characterService = {
   // Buscar vários: /character/[1,2,3]
   getMany(ids: number[]) {
     const idString = ids.join(',')
-    return useApi<Character[]>(`/character/[${idString}]`)
+    return useApi<Character[]>(`/character/${idString}`)
   },
 
   // Buscar paginado

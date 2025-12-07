@@ -5,7 +5,7 @@
             <p :class="isDarkmode ? 'text-white' : 'text-black'" class="text-sm sm:text-base text-center md:text-left">©
                 2025 Copyright. Todos os direitos reservados.</p>
             <p :class="isDarkmode ? 'text-white' : 'text-black'" class="text-sm sm:text-base text-center md:text-right">
-                Desenvolvido por ErickDev</p>
+                Desenvolvido por Erick Kempner</p>
         </div>
     </div>
 </template>

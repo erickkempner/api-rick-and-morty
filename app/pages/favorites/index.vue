@@ -1,8 +1,8 @@
 <template>
     <div>
-        <CharacterListing :showSearchBar="true" />
-        <EpisodeListing :showSearchBar="true" />
-        <LocationsListing :showSearchBar="true" />
+        <CharacterListing :showSearchBar="false" />
+        <EpisodeListing :showSearchBar="false" />
+        <LocationsListing :showSearchBar="false" />
         <Footer />
     </div>
 </template>

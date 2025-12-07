@@ -1,6 +1,6 @@
 <template>
     <div>
-        <HeaderMain v-if="pagePath && !showSearchBar" :noCategory="noCategory" class="py-15 px-4" />
+        <HeaderMain v-if="shouldShowSearchBar" :noCategory="true" class="py-15 px-4" />
 
 
         <div v-if="isLoading" class="relative min-h-[400px] flex items-center justify-center">
@@ -10,7 +10,7 @@
             </div>
         </div>
         <div v-else>
-            <CardEpisode :listOfEpisodes="displayedEpisodes" :seeAll="noCategory" />
+            <CardEpisode :title="props.title" :listOfEpisodes="displayedEpisodes" :seeAll="false" />
         </div>
 
         <Pagination v-if="pagePath && !searchTerm" :currentPage="currentPage" :totalCount="totalCount / 2"
@@ -25,7 +25,15 @@ import { usePagesEpisodeStore } from '~/stores/pagesEpisode';
 import { useSearchStore } from '~/stores/search';
 import { useFavoriteEpisodeStore } from '~/stores/favoriteEpisode';
 
-const { noCategory = true, showSearchBar = true } = defineProps<{ noCategory?: boolean, showSearchBar?: boolean }>();
+const props = withDefaults(defineProps<{ noCategory?: boolean, showSearchBar?: boolean, title?: string }>(), {
+    noCategory: true,
+    showSearchBar: undefined,
+    title: 'Episódios'
+});
+
+
+
+
 
 const isLoading = ref(false)
 const route = useRoute()
@@ -49,6 +57,13 @@ const { data } = await episodesService.list({ page: initialPage })
 
 const dataEpisode = ref<Episode[]>(data.value?.results || [])
 const currentPage = ref(initialPage)
+
+const shouldShowSearchBar = computed(() => {
+    if (props.showSearchBar !== undefined) {
+        return props.showSearchBar
+    }
+    return route.path.replace(/\/$/, '') === '/episodes'
+})
 
 // Update store with initial values
 pagesStore.setPage(initialPage)
@@ -115,6 +130,8 @@ const handlePageUpdate = async (newPage: number) => {
         isLoading.value = false
     }
 }
+
+
 
 
 </script>

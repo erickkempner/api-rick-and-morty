@@ -89,8 +89,8 @@ const searchFunc = async () => {
         searchStore.setLocationResults(locResults)
 
 
-    } catch (error) {
-
+    } catch (err) {
+        console.warn(err)
         // Em caso de erro, garante que tudo está limpo MAS mantém o searchTerm
         searchStore.setCharacterResults([])
         searchStore.setEpisodeResults([])
@@ -107,11 +107,7 @@ watch(search, (newValue) => {
     }
 })
 
-// Limpa a busca quando muda de página (qualquer mudança de rota)
-watch(() => route.path, () => {
-    search.value = ''
-    searchStore.clearSearch()
-})
+
 </script>
 
 <style scoped></style>

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <HeaderMain v-if="pagePath && !showSearchBar" :noCategory="true" class="py-15 px-4" />
+        <HeaderMain v-if="shouldShowSearchBar" :noCategory="true" class="py-15 px-4" />
 
 
         <!-- Loading overlay -->
@@ -28,6 +28,8 @@ import type { Location } from '~/types';
 import { usePagesLocationStore } from '~/stores/pagesLocation';
 import { useSearchStore } from '~/stores/search';
 import { useFavoriteLocationStore } from '~/stores/favoriteLocation';
+
+const props = defineProps<{ showSearchBar?: boolean }>();
 
 
 const isLoading = ref(false)
@@ -66,7 +68,12 @@ if (route.path === '/favorites') {
     }
 }
 
-const { showSearchBar = true } = defineProps<{ showSearchBar?: boolean }>()
+const shouldShowSearchBar = computed(() => {
+    if (props.showSearchBar !== undefined) {
+        return props.showSearchBar
+    }
+    return route.path.replace(/\/$/, '') === '/locations'
+})
 
 
 // Update store with initial values
